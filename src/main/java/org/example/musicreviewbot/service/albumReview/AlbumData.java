@@ -7,10 +7,10 @@ import java.util.ArrayList;
 public class AlbumData {
     String title;
     String artist;
-    ArrayList<String> trackTitles;
-    ArrayList<Double> marks;
+    String[] trackTitles;
+    double[] marks;
 
-    public AlbumData(String title, String artist, ArrayList<String> trackTitles, ArrayList<Double> marks) {
+    public AlbumData(String title, String artist, String[] trackTitles, double[] marks) {
         this.title = title;
         this.artist = artist;
         this.trackTitles = trackTitles;

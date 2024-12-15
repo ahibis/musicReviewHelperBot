@@ -1,8 +1,6 @@
 package org.example.musicreviewbot.textParser;
 
 
-
-
 import lombok.Getter;
 
 import java.net.URI;
@@ -10,12 +8,16 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ParsedText {
     ArrayList<TextToken> tokens = new ArrayList<>();
     @Getter
     String text;
+    double[] nums;
+    URI[] uris;
+    URI uri;
+    String[] strings;
+
     ArrayList<TextToken> getTokensByText(String text) {
         String regex = "[^,\\s]+";
         this.text = text;
@@ -34,23 +36,43 @@ public class ParsedText {
     public ParsedText(String text) {
         tokens = getTokensByText(text);
     }
-    public ArrayList<Double> getNumbers(){
-        return (ArrayList<Double>) tokens.stream()
-                .filter(TextToken::isNumber)
-                .map(TextToken::getDouble)
-                .collect(Collectors.toList());
-    }
-    public ArrayList<URI> getUrls(){
-        return (ArrayList<URI>) tokens.stream()
-                .filter(TextToken::isUrl)
-                .map(TextToken::getUrl)
-                .collect(Collectors.toList());
-    }
-    public URI getURL(){
-        return tokens.stream().filter(TextToken::isUrl).map(TextToken::getUrl).findFirst().orElse(null);
+
+    public double[] getNumbers() {
+        if (nums == null) {
+            nums = tokens.stream()
+                    .filter(TextToken::isNumber)
+                    .mapToDouble(TextToken::getDouble)
+                    .toArray();
+        }
+        return nums;
     }
 
-    public ArrayList<String> getStrings(){
-        return (ArrayList<String>) tokens.stream().map(TextToken::getString).collect(Collectors.toList());
+    public URI[] getURIs() {
+        if (uris == null) {
+            uris = tokens.stream()
+                    .filter(TextToken::isUrl)
+                    .map(TextToken::getUrl)
+                    .toArray(URI[]::new);
+        }
+
+        return uris;
+    }
+
+    public URI getURI() {
+        if (uri == null) {
+            uri = tokens.stream()
+                    .filter(TextToken::isUrl)
+                    .map(TextToken::getUrl)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return uri;
+    }
+
+    public String[] getStrings() {
+        if(strings == null) {
+            strings =  tokens.stream().map(TextToken::getString).toArray(String[]::new);
+        }
+        return strings;
     }
 }

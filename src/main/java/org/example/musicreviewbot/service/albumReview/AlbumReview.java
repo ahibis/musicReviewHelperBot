@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 public class AlbumReview {
     String title;
     String artist;
-    ArrayList<String> trackTitles;
-    ArrayList<Double> marks;
+    String[] trackTitles;
+    double[] marks;
 
     public AlbumReview(AlbumData data) {
         title = data.title;
@@ -19,15 +19,15 @@ public class AlbumReview {
     }
 
     double getEstimate(){
-        double size = marks.size();
-        double sum2 = marks.stream().mapToDouble(Double::doubleValue).map(v->v*v).sum();
+        double size = marks.length;
+        double sum2 = Arrays.stream(marks).map(v->v*v).sum();
         return Math.sqrt(sum2/size);
     }
     String getTracksWithMarks() {
         var result = "";
-        for (int i = 0; i < trackTitles.size(); i++) {
-            String mark = i< marks.size() ? String.valueOf(marks.get(i).intValue())  : "?";
-            result +=  String.format("%s %s/10\n",trackTitles.get(i), mark);
+        for (int i = 0; i < trackTitles.length; i++) {
+            String mark = i< marks.length ? String.valueOf((int) marks[i])  : "?";
+            result +=  String.format("%s %s/10\n",trackTitles[i], mark);
         }
         return result;
     }
@@ -42,7 +42,7 @@ public class AlbumReview {
                 #ОбзорАльбома #%s
                 """;
         double estimate = getEstimate();
-        return String.format(albumTemplate, artist, title, getTracksWithMarks(), estimate, artist.replace(" ",""));
+        return String.format(Locale.ENGLISH, albumTemplate, artist, title, getTracksWithMarks(), estimate, artist.replace(" ",""));
     }
 
 }

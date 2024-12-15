@@ -8,8 +8,6 @@ import org.example.musicreviewbot.service.albumReview.AlbumReview;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -22,9 +20,9 @@ import java.util.stream.Collectors;
 public class ReviewByYandexCommand implements IBotCommand {
     @Override
     public boolean canRun(ParsedText parsedText) {
-        List<URI> urls = parsedText.getUrls();
-        if (urls.isEmpty()) return false;
-        URI uri = urls.getFirst();
+        URI[] urls = parsedText.getURIs();
+        if (urls.length == 0) return false;
+        URI uri = urls[0];
         String host = uri.getHost();
         if (host.equals("music.yandex.ru")) {
             return true;
@@ -32,15 +30,15 @@ public class ReviewByYandexCommand implements IBotCommand {
         return false;
     }
 
-    private AlbumData getAlbumData(Album album, ArrayList<Double> marks) {
-        var tracks = (ArrayList<String>) Arrays.stream(album.volumes[0]).map(track -> track.title).collect(Collectors.toList());
+    private AlbumData getAlbumData(Album album, double[] marks) {
+        var tracks = Arrays.stream(album.volumes[0]).map(track -> track.title).toArray(String[]::new);
         return new AlbumData(album.title, album.artists[0].name, tracks, marks);
     }
 
     @Override
     public String run(ParsedText parsedText, Message message) {
         var marks = parsedText.getNumbers();
-        var URI = parsedText.getURL();
+        var URI = parsedText.getURI();
         System.out.println(URI);
         System.out.println(marks);
         var albumID = Arrays
@@ -72,12 +70,10 @@ public class ReviewByYandexCommand implements IBotCommand {
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("HTTP error code : " + conn.getResponseCode());
+                return null;
+                //throw new RuntimeException("HTTP error code : " + conn.getResponseCode());
             }
             InputStreamReader reader = new InputStreamReader(conn.getInputStream());
-            if (!conn.getResponseMessage().equals("OK")) {
-                return null;
-            }
             System.out.println(conn.getResponseMessage());
 
             Gson gson = new Gson();

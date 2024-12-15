@@ -12,6 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -24,6 +25,12 @@ public class TelegramBot extends TelegramLongPollingBot {
         this.config = config;
     }
 
+    IBotCommand[] botCommands = {
+            new HelpCommand(),
+            new ReviewByYandexCommand(),
+            new NotFoundedCommand()
+    };
+
     @Override
     public void onUpdateReceived(Update update) {
         var message = update.getMessage();
@@ -31,14 +38,8 @@ public class TelegramBot extends TelegramLongPollingBot {
             String messageText = message.getText();
             long chatId = message.getChatId();
             ParsedText parsedText = new ParsedText(messageText);
-            List<IBotCommand> commands = new ArrayList<IBotCommand>();
-            commands.add(new HelpCommand());
-            commands.add(new ReviewByYandexCommand());
 
-            commands.add(new NotFoundedCommand());
-
-
-            commands.stream().anyMatch(command -> {
+            Arrays.stream(botCommands).anyMatch(command -> {
                 boolean canRun = command.canRun(parsedText);
                 if (canRun) {
                     String answer = command.run(parsedText, message);

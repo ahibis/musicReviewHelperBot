@@ -13,12 +13,12 @@ public class TextToken {
     String getString(){
         return tokenString;
     }
-    Boolean isNumber(){
+    public boolean isNumber(){
         return tokenString.matches("\\d+\\.?\\d*") || isEstimate();
     }
-    double getDouble(){
+    public double getDouble(){
         if(isEstimate()){
-            String regex = "\\d+";
+            String regex = "\\d+\\.?\\d*";
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(tokenString);
             matcher.find();
