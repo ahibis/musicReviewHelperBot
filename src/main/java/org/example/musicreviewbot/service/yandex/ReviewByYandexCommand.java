@@ -44,12 +44,12 @@ public class ReviewByYandexCommand implements IBotCommand {
         var albumID = Arrays
                 .stream(URI.getPath().split("/"))
                 .filter(val -> val.matches("\\d+"))
-                .map(v -> Integer.parseInt(v))
+                .map(Integer::parseInt)
                 .findFirst();
         if (albumID.isEmpty()) {
             return "Не верно указана ссылка на яндекс альбом";
         }
-        var albumId = albumID.get().intValue();
+        var albumId = albumID.get();
         System.out.println(albumId);
         var APiURL = "https://music.yandex.ru/handlers/album.jsx?album=" + albumId;
         Album album = getAlbum(APiURL);

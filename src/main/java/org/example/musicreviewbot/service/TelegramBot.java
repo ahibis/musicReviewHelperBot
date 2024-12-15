@@ -39,26 +39,23 @@ public class TelegramBot extends TelegramLongPollingBot {
             long chatId = message.getChatId();
             ParsedText parsedText = new ParsedText(messageText);
 
-            Arrays.stream(botCommands).anyMatch(command -> {
-                boolean canRun = command.canRun(parsedText);
-                if (canRun) {
-                    String answer = command.run(parsedText, message);
-                    this.sendMessage(chatId, answer);
-                }
-                return canRun;
-            });
+            var chooseCommand = Arrays.stream(botCommands)
+                    .filter(command -> command.canRun(parsedText))
+                    .findFirst().orElse(null);
+            try {
+                assert chooseCommand != null;
+                String answer = chooseCommand.run(parsedText, message);
+                this.sendMessage(chatId, answer);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                sendMessage(chatId, "непредвиденная ошибка\n" + e.getMessage());
+            }
         }
-    }
-
-    private void startCommandRecieved(long chatId, String userName) {
-        log.info("start message recieved for chatId: userName: {}", userName);
-        String answer = "Привет" + userName;
-        sendMessage(chatId, answer);
     }
 
     public void sendMessage(long chatId, String message) {
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(String.valueOf((chatId)));
+        sendMessage.setChatId(String.valueOf(chatId));
         sendMessage.setText(message);
 
         try {

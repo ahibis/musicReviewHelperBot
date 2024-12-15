@@ -1,9 +1,7 @@
 package org.example.musicreviewbot.service.albumReview;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 public class AlbumReview {
     String title;
@@ -19,17 +17,17 @@ public class AlbumReview {
     }
 
     double getEstimate(){
-        double size = marks.length;
-        double sum2 = Arrays.stream(marks).map(v->v*v).sum();
-        return Math.sqrt(sum2/size);
+        return Math.sqrt(Arrays.stream(marks)
+                .map(v->v*v)
+                .average().orElse(Double.NaN));
     }
     String getTracksWithMarks() {
-        var result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < trackTitles.length; i++) {
             String mark = i< marks.length ? String.valueOf((int) marks[i])  : "?";
-            result +=  String.format("%s %s/10\n",trackTitles[i], mark);
+            result.append(String.format("%s %s/10\n", trackTitles[i], mark));
         }
-        return result;
+        return result.toString();
     }
 
     public String makeReview() {
