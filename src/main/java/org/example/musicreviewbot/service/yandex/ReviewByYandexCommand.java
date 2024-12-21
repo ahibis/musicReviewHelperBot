@@ -3,8 +3,9 @@ package org.example.musicreviewbot.service.yandex;
 
 import com.google.gson.Gson;
 import org.example.musicreviewbot.service.IBotCommand;
-import org.example.musicreviewbot.service.albumReview.AlbumData;
+import org.example.musicreviewbot.service.albumReview.AlbumDTO;
 import org.example.musicreviewbot.service.albumReview.AlbumReview;
+import org.example.musicreviewbot.service.yandex.getAlbum.Album;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
@@ -12,10 +13,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReviewByYandexCommand implements IBotCommand {
     @Override
@@ -24,15 +22,16 @@ public class ReviewByYandexCommand implements IBotCommand {
         if (urls.length == 0) return false;
         URI uri = urls[0];
         String host = uri.getHost();
-        if (host.equals("music.yandex.ru")) {
+
+        if (host.equals("music.yandex.ru") || host.equals("music.yandex.com")) {
             return true;
         }
         return false;
     }
 
-    private AlbumData getAlbumData(Album album, double[] marks) {
+    private AlbumDTO getAlbumData(Album album, double[] marks) {
         var tracks = Arrays.stream(album.volumes[0]).map(track -> track.title).toArray(String[]::new);
-        return new AlbumData(album.title, album.artists[0].name, tracks, marks);
+        return new AlbumDTO(album.title, album.artists[0].name, tracks, marks);
     }
 
     @Override
@@ -63,9 +62,10 @@ public class ReviewByYandexCommand implements IBotCommand {
     }
 
     private Album getAlbum(String urlString) {
+        HttpURLConnection conn = null;
         try {
             URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
@@ -73,14 +73,21 @@ public class ReviewByYandexCommand implements IBotCommand {
                 return null;
                 //throw new RuntimeException("HTTP error code : " + conn.getResponseCode());
             }
-            InputStreamReader reader = new InputStreamReader(conn.getInputStream());
-            System.out.println(conn.getResponseMessage());
+            try(InputStreamReader reader = new InputStreamReader(conn.getInputStream())){
+                System.out.println(conn.getResponseMessage());
 
-            Gson gson = new Gson();
-            return gson.fromJson(reader, Album.class);
+                Gson gson = new Gson();
+                return gson.fromJson(reader, Album.class);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        } finally {
+        // Закрываем HttpURLConnection вручную
+        if (conn != null) {
+            conn.disconnect();
         }
+    }
+
     }
 }

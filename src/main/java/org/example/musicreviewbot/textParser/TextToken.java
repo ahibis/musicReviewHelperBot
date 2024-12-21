@@ -1,5 +1,8 @@
 package org.example.musicreviewbot.textParser;
 
+
+import org.glassfish.grizzly.utils.Pair;
+
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.regex.Matcher;
@@ -37,6 +40,13 @@ public class TextToken {
             e.printStackTrace();
             return null;
         }
+    }
+    Pair<String, String> getKey(){
+        if(!tokenString.matches("\\s+=\\s+")){
+            return null;
+        }
+        String[] pair = tokenString.split("=");
+        return new Pair<>(pair[0],pair[1]);
     }
     boolean isEstimate(){
         return tokenString.matches("\\d+\\s*/\\s*\\d+");

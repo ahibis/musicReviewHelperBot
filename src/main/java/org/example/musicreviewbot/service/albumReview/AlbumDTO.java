@@ -1,12 +1,9 @@
 package org.example.musicreviewbot.service.albumReview;
 
 import lombok.AllArgsConstructor;
-import org.example.musicreviewbot.service.yandex.Album;
-
-import java.util.ArrayList;
 
 @AllArgsConstructor
-public class AlbumData {
+public class AlbumDTO {
     String title;
     String artist;
     String[] trackTitles;

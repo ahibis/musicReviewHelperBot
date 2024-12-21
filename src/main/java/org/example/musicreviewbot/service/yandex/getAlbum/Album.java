@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.service.yandex;
+package org.example.musicreviewbot.service.yandex.getAlbum;
 
 public class Album {
     public String title;

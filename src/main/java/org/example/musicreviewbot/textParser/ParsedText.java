@@ -2,9 +2,12 @@ package org.example.musicreviewbot.textParser;
 
 
 import lombok.Getter;
+import org.glassfish.grizzly.utils.Pair;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Map;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -68,7 +71,11 @@ public class ParsedText {
         }
         return uri;
     }
-
+    public Map<String, String> getKeys(){
+        return tokens.stream().map(TextToken::getKey)
+                .filter(v->v!=null)
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
+    }
     public String[] getStrings() {
         if(strings == null) {
             strings =  tokens.stream().map(TextToken::getString).toArray(String[]::new);

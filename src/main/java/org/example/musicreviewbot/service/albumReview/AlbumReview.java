@@ -1,5 +1,6 @@
 package org.example.musicreviewbot.service.albumReview;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -9,7 +10,7 @@ public class AlbumReview {
     String[] trackTitles;
     double[] marks;
 
-    public AlbumReview(AlbumData data) {
+    public AlbumReview(AlbumDTO data) {
         title = data.title;
         artist = data.artist;
         trackTitles = data.trackTitles;
@@ -22,12 +23,12 @@ public class AlbumReview {
                 .average().orElse(Double.NaN));
     }
     String getTracksWithMarks() {
-        StringBuilder result = new StringBuilder();
+        var result = new ArrayList<String>();
         for (int i = 0; i < trackTitles.length; i++) {
             String mark = i< marks.length ? String.valueOf((int) marks[i])  : "?";
-            result.append(String.format("%s %s/10\n", trackTitles[i], mark));
+            result.add(String.format("%s %s/10", trackTitles[i], mark));
         }
-        return result.toString();
+        return String.join("\n", result);
     }
 
     public String makeReview() {

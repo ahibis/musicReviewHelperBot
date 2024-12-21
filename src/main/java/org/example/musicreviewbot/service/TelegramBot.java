@@ -11,9 +11,9 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.util.ArrayList;
+
 import java.util.Arrays;
-import java.util.List;
+
 
 @Slf4j
 @Component
@@ -48,7 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 this.sendMessage(chatId, answer);
             } catch (Exception e) {
                 log.error(e.getMessage());
-                sendMessage(chatId, "непредвиденная ошибка\n" + e.getMessage());
+                sendMessage(chatId, "Непредвиденная ошибка\n" + e.getMessage());
             }
         }
     }
