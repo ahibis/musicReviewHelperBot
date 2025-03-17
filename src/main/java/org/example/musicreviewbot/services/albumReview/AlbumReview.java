@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.service.albumReview;
+package org.example.musicreviewbot.services.albumReview;
 
 import java.util.ArrayList;
 import java.util.Arrays;

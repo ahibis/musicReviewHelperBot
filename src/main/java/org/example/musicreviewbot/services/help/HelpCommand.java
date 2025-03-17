@@ -1,7 +1,7 @@
-package org.example.musicreviewbot.service.help;
+package org.example.musicreviewbot.services.help;
 
 
-import org.example.musicreviewbot.service.IBotCommand;
+import org.example.musicreviewbot.services.IBotCommand;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 

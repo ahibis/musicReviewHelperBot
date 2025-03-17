@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.service.albumReview;
+package org.example.musicreviewbot.services.albumReview;
 
 import lombok.AllArgsConstructor;
 

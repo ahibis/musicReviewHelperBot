@@ -1,9 +1,9 @@
-package org.example.musicreviewbot.service;
+package org.example.musicreviewbot.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.musicreviewbot.config.botConfig;
-import org.example.musicreviewbot.service.help.HelpCommand;
-import org.example.musicreviewbot.service.yandex.ReviewByYandexCommand;
+import org.example.musicreviewbot.services.help.HelpCommand;
+import org.example.musicreviewbot.services.yandex.ReviewByYandexCommand;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

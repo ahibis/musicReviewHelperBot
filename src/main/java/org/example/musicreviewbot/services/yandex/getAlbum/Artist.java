@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.service.yandex.getAlbum;
+package org.example.musicreviewbot.services.yandex.getAlbum;
 
 public class Artist {
     public int id;

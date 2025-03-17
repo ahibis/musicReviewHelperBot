@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.service;
+package org.example.musicreviewbot.services;
 
 
 import org.example.musicreviewbot.textParser.ParsedText;

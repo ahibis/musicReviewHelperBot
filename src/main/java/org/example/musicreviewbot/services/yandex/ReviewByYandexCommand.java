@@ -1,11 +1,11 @@
-package org.example.musicreviewbot.service.yandex;
+package org.example.musicreviewbot.services.yandex;
 
 
 import com.google.gson.Gson;
-import org.example.musicreviewbot.service.IBotCommand;
-import org.example.musicreviewbot.service.albumReview.AlbumDTO;
-import org.example.musicreviewbot.service.albumReview.AlbumReview;
-import org.example.musicreviewbot.service.yandex.getAlbum.Album;
+import org.example.musicreviewbot.services.IBotCommand;
+import org.example.musicreviewbot.services.albumReview.AlbumDTO;
+import org.example.musicreviewbot.services.albumReview.AlbumReview;
+import org.example.musicreviewbot.services.yandex.getAlbum.Album;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
