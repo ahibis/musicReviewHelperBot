@@ -1,21 +1,27 @@
-package org.example.musicreviewbot.services.yandex;
+package org.example.musicreviewbot.controllers.commands;
 
 
-import com.google.gson.Gson;
-import org.example.musicreviewbot.services.IBotCommand;
 import org.example.musicreviewbot.services.albumReview.AlbumDTO;
 import org.example.musicreviewbot.services.albumReview.AlbumReview;
+import org.example.musicreviewbot.services.AlbumService;
+import org.example.musicreviewbot.services.yandex.YandexMusicService;
 import org.example.musicreviewbot.services.yandex.getAlbum.Album;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.util.Arrays;
 
 public class ReviewByYandexCommand implements IBotCommand {
+
+    private final AlbumService albumService;
+    private final YandexMusicService yandexService;
+
+    public ReviewByYandexCommand(AlbumService albumService, YandexMusicService yandexService) {
+        this.albumService = albumService;
+        this.yandexService = yandexService;
+    }
+
     @Override
     public boolean canRun(ParsedText parsedText) {
         URI[] urls = parsedText.getURIs();
@@ -36,6 +42,7 @@ public class ReviewByYandexCommand implements IBotCommand {
 
     @Override
     public String run(ParsedText parsedText, Message message) {
+        Long userId = message.getFrom().getId();
         var marks = parsedText.getNumbers();
         var URI = parsedText.getURI();
         System.out.println(URI);
@@ -51,43 +58,18 @@ public class ReviewByYandexCommand implements IBotCommand {
         var albumId = albumID.get();
         System.out.println(albumId);
         var APiURL = "https://music.yandex.ru/handlers/album.jsx?album=" + albumId;
-        Album album = getAlbum(APiURL);
+        Album album = yandexService.getAlbum(APiURL);
         if (album == null) {
             return "не удалось получить данные об альбоме";
         }
         var albumData = getAlbumData(album, marks);
+        Long MyAlbumId = albumService.saveAlbum(albumData, userId);
+
         var albumReview = new AlbumReview(albumData);
+        albumService.markAlbum(MyAlbumId, albumReview.getEstimate(), userId);
 
         return albumReview.makeReview();
     }
 
-    private Album getAlbum(String urlString) {
-        HttpURLConnection conn = null;
-        try {
-            URL url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Accept", "application/json");
 
-            if (conn.getResponseCode() != 200) {
-                return null;
-                //throw new RuntimeException("HTTP error code : " + conn.getResponseCode());
-            }
-            try(InputStreamReader reader = new InputStreamReader(conn.getInputStream())){
-                System.out.println(conn.getResponseMessage());
-
-                Gson gson = new Gson();
-                return gson.fromJson(reader, Album.class);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        } finally {
-        // Закрываем HttpURLConnection вручную
-        if (conn != null) {
-            conn.disconnect();
-        }
-    }
-
-    }
 }

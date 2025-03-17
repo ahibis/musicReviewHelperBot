@@ -5,11 +5,10 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Album {
+public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
+    private String name;
 
-    private Long authorId;
 }

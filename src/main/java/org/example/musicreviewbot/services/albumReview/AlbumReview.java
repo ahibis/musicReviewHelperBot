@@ -17,7 +17,7 @@ public class AlbumReview {
         marks = data.marks;
     }
 
-    double getEstimate(){
+    public double getEstimate(){
         return Math.sqrt(Arrays.stream(marks)
                 .map(v->v*v)
                 .average().orElse(Double.NaN));

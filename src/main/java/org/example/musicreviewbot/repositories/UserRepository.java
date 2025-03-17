@@ -1,4 +1,4 @@
-package org.example.musicreviewbot.models.repositories;
+package org.example.musicreviewbot.repositories;
 
 import org.example.musicreviewbot.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;

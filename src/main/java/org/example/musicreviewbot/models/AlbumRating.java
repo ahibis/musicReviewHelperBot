@@ -10,7 +10,7 @@ public class AlbumRating {
     private Long id;
     private Long userId;
     private Long albumId;
-    private int mark;
+    private double mark;
 
     // Getters and Setters
 }

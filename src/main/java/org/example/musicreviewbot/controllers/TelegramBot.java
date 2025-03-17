@@ -1,10 +1,16 @@
-package org.example.musicreviewbot.services;
+package org.example.musicreviewbot.controllers;
 
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.example.musicreviewbot.config.botConfig;
-import org.example.musicreviewbot.services.help.HelpCommand;
-import org.example.musicreviewbot.services.yandex.ReviewByYandexCommand;
+import org.example.musicreviewbot.controllers.commands.IBotCommand;
+import org.example.musicreviewbot.controllers.commands.NotFoundedCommand;
+import org.example.musicreviewbot.services.AlbumService;
+import org.example.musicreviewbot.controllers.commands.HelpCommand;
+import org.example.musicreviewbot.controllers.commands.ReviewByYandexCommand;
+import org.example.musicreviewbot.services.yandex.YandexMusicService;
 import org.example.musicreviewbot.textParser.ParsedText;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -20,16 +26,25 @@ import java.util.Arrays;
 public class TelegramBot extends TelegramLongPollingBot {
 
     final botConfig config;
+    @Autowired
+    private AlbumService albumService;
+    @Autowired
+    private YandexMusicService yandexService;
 
     public TelegramBot(botConfig config) {
         this.config = config;
     }
 
-    IBotCommand[] botCommands = {
-            new HelpCommand(),
-            new ReviewByYandexCommand(),
-            new NotFoundedCommand()
-    };
+    private IBotCommand[] botCommands;
+    @PostConstruct
+    public void init() {
+        // Инициализация команд после внедрения зависимостей
+        botCommands = new IBotCommand[]{
+                new HelpCommand(),
+                new ReviewByYandexCommand(albumService, yandexService),
+                new NotFoundedCommand()
+        };
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
