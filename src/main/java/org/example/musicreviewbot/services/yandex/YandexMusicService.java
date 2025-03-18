@@ -11,6 +11,7 @@ import java.net.URL;
 
 @Service
 public class YandexMusicService {
+
     public Album getAlbum(String urlString) {
         HttpURLConnection conn = null;
         try {

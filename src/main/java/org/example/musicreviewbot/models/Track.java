@@ -11,6 +11,8 @@ public class Track {
     private Long id;
     private String title;
     private Long albumId;
+    private Long markSum;
+    private Long markCount;
 
     // Getters and Setters
 }

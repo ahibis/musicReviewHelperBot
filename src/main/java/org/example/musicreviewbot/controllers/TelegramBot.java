@@ -3,11 +3,9 @@ package org.example.musicreviewbot.controllers;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.example.musicreviewbot.config.botConfig;
-import org.example.musicreviewbot.controllers.commands.IBotCommand;
-import org.example.musicreviewbot.controllers.commands.NotFoundedCommand;
+import org.example.musicreviewbot.controllers.commands.*;
 import org.example.musicreviewbot.services.AlbumService;
-import org.example.musicreviewbot.controllers.commands.HelpCommand;
-import org.example.musicreviewbot.controllers.commands.ReviewByYandexCommand;
+import org.example.musicreviewbot.services.TokenService;
 import org.example.musicreviewbot.services.yandex.YandexMusicService;
 import org.example.musicreviewbot.textParser.ParsedText;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +28,8 @@ public class TelegramBot extends TelegramLongPollingBot {
     private AlbumService albumService;
     @Autowired
     private YandexMusicService yandexService;
+    @Autowired
+    private TokenService tokenService;
 
     public TelegramBot(botConfig config) {
         this.config = config;
@@ -41,6 +41,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         // Инициализация команд после внедрения зависимостей
         botCommands = new IBotCommand[]{
                 new HelpCommand(),
+                new AuthCommand(tokenService),
                 new ReviewByYandexCommand(albumService, yandexService),
                 new NotFoundedCommand()
         };

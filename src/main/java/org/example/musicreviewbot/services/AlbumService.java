@@ -68,16 +68,29 @@ public class AlbumService {
                     return albumRepository.save(newAlbum);
                 });
 
+        double[] marks = albumDTO.getMarks();
         for (int i = 0; i < albumDTO.getTrackTitles().length; i++) {
+            if(i>=marks.length) {
+                continue;
+            }
             String title = albumDTO.getTrackTitles()[i];
             Long albumId = album.getId();
+
+            int mark = (int) marks[i];
             Track track = trackRepository.findByAlbumIdAndTitle(albumId, title)
                     .orElseGet(() -> {
                         Track newTrack = new Track();
                         newTrack.setTitle(title);
                         newTrack.setAlbumId(albumId);
+                        newTrack.setMarkSum(0L);
+                        newTrack.setMarkCount(0L);
+
                         return trackRepository.save(newTrack);
                     });
+            track.setMarkCount((track.getMarkCount()==null? 0: track.getMarkCount()) + 1L);
+            track.setMarkSum((track.getMarkSum()==null? 0: track.getMarkSum()) + (long) mark);
+            trackRepository.save(track);
+
             Long trackId = track.getId();
 
 
@@ -86,7 +99,7 @@ public class AlbumService {
                     .orElseGet(TrackRating::new);
             trackRating.setTrackId(trackId);
             trackRating.setUserId(userId);
-            trackRating.setMark((int) albumDTO.getMarks()[i]);
+            trackRating.setMark(mark);
             trackRatingRepository.save(trackRating);
         }
         return album.getId();
@@ -102,6 +115,9 @@ public class AlbumService {
         albumRatingRepository.save(rating);
     }
 
+    public List<AlbumStatsDTO> getAlbumReviews(Long userId) {
+        return albumRatingRepository.getByUserId(userId);
+    }
 
 
 
