@@ -16,14 +16,14 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     Optional<Album> findByAuthorIdAndTitle(Long AuthorId, String title);
 
     @Query("SELECT new org.example.musicreviewbot.repositories.dto.AlbumStatsDTO(" +
-            "a.id, " + // albumId
-            "a.title, " + // title
+            "a.id, " +
+            "a.title, " +
             "AVG(ar.mark)," +
-            "au.name) " + // средний рейтинг
+            "au.name) " +
             "FROM Album a " +
             "JOIN Author au ON a.authorId = au.id " +
             "LEFT JOIN AlbumRating ar ON a.id = ar.albumId "+
-            "GROUP by a.id, au.name") // Группируем по альбому
+            "GROUP by a.id, au.name")
     List<AlbumStatsDTO> getAlbumWithStats();
 
 

@@ -63,6 +63,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                 this.sendMessage(chatId, answer);
             } catch (Exception e) {
                 log.error(e.getMessage());
+                e.printStackTrace();
                 sendMessage(chatId, "Непредвиденная ошибка\n" + e.getMessage());
             }
         }
@@ -77,6 +78,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error("Error message {}", e.getMessage());
+            e.printStackTrace();
         }
     }
 
